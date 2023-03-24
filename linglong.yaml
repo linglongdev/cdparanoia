@@ -1,0 +1,41 @@
+package:
+  id: cdparanoia
+  name: cdparanoia
+  version: 3.10.2
+  kind: lib
+  discription: |
+    cdparanoia
+
+base:
+  id: org.deepin.base
+  version: 20.5.0
+
+source:
+  kind: git
+  url: https://github.com/deepin-community/cdparanoia.git
+  version: master
+  commit: 3ebb8ed7d1bdcbb14879453d8f74b7e95a86448c
+  patch:
+  - 01-typos-and-spelling.patch
+  - 02-ide-devices.patch
+  - 03-gcc4.3.patch
+  - 04-endian.patch
+  - 05-kfreebsd.patch
+  - 06-autoconf.patch
+  - 07-jpmanfix.patch
+  - cdparanoia-force-progress-bar.diff
+  - 0009-dh-autoconf-generate-config-files.patch
+build:
+  kind: manual
+  manual:
+    configure: |
+      #exec bash
+      export CFLAGS+="-fPIC -g"
+      export LDFLAGS+="-fPIC"
+      cp configure.guess config.guess
+      cp configure.sub config.sub
+      autoreconf -ivf
+      ./configure --prefix=${PREFIX} \
+                  --libdir=${PREFIX}/lib  
+      make -j6
+      make -j install
